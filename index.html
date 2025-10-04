@@ -81,10 +81,18 @@
             <h1 class="text-3xl sm:text-4xl font-bold text-center mb-2 text-white" data-lang-key="mainTitle">Compresor de Archivos Pro</h1>
             <p class="text-center text-zinc-400 mb-6 sm:mb-8" data-lang-key="mainSubtitle">Comprime y descomprime archivos ZIP de forma rápida y segura en tu navegador.</p>
             
-            <div class="bg-zinc-800 rounded-xl shadow-2xl p-6 sm:p-8 relative">
-                <!-- Language Switcher -->
-                <div class="absolute top-4 right-4 z-10">
-                    <div class="relative">
+            <div class="bg-zinc-800 rounded-xl shadow-2xl p-6 sm:p-8">
+                
+                <!-- Controls Header -->
+                <div class="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+                    <!-- Tab Controls -->
+                    <div class="flex border-b border-zinc-700">
+                        <button id="compress-tab-btn" class="px-4 py-2 text-lg font-semibold border-b-2 border-blue-500 text-white" data-lang-key="compressTab">Comprimir</button>
+                        <button id="decompress-tab-btn" class="px-4 py-2 text-lg font-semibold text-zinc-400 border-b-2 border-transparent" data-lang-key="decompressTab">Descomprimir</button>
+                    </div>
+                    
+                    <!-- Language Switcher -->
+                    <div class="relative z-10 self-end sm:self-auto">
                         <button id="language-switcher-btn" type="button" class="inline-flex items-center justify-center rounded-md border border-zinc-600 shadow-sm px-3 py-2 bg-zinc-700 text-sm font-medium text-white hover:bg-zinc-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-800 focus:ring-blue-500">
                             <span data-lang-key="language">Idioma</span>
                             <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -98,12 +106,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Tab Controls -->
-                <div class="flex border-b border-zinc-700 mb-6">
-                    <button id="compress-tab-btn" class="px-4 py-2 text-lg font-semibold border-b-2 border-blue-500 text-white" data-lang-key="compressTab">Comprimir</button>
-                    <button id="decompress-tab-btn" class="px-4 py-2 text-lg font-semibold text-zinc-400 border-b-2 border-transparent" data-lang-key="decompressTab">Descomprimir</button>
                 </div>
 
                 <!-- Compressor View -->
