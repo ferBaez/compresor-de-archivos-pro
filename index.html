@@ -84,10 +84,20 @@
             <div class="bg-zinc-800 rounded-xl shadow-2xl p-6 sm:p-8 relative">
                 <!-- Language Switcher -->
                 <div class="absolute top-4 right-4 z-10">
-                    <select id="language-switcher" class="bg-zinc-700 text-white text-sm rounded-md p-1 border border-zinc-600 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="es">Español</option>
-                        <option value="en">English</option>
-                    </select>
+                    <div class="relative">
+                        <button id="language-switcher-btn" type="button" class="inline-flex items-center justify-center rounded-md border border-zinc-600 shadow-sm px-3 py-2 bg-zinc-700 text-sm font-medium text-white hover:bg-zinc-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-800 focus:ring-blue-500">
+                            <span data-lang-key="language">Idioma</span>
+                            <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div id="language-switcher-menu" class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-zinc-700 ring-1 ring-black ring-opacity-5 focus:outline-none hidden" role="menu" aria-orientation="vertical" aria-labelledby="language-switcher-btn">
+                            <div class="py-1" role="none">
+                                <a href="#" class="text-white block px-4 py-2 text-sm hover:bg-zinc-600" role="menuitem" data-lang="es">Español</a>
+                                <a href="#" class="text-white block px-4 py-2 text-sm hover:bg-zinc-600" role="menuitem" data-lang="en">English</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Tab Controls -->
@@ -244,6 +254,7 @@
                     contactUs: "contactanos",
                     privacyNotice: "Aviso de Privacidad",
                     privacyTitle: "Aviso de Privacidad",
+                    language: "Idioma",
                     seoTitle: "Tu Compresor de Archivos Online, Seguro y Potente",
                     seoDesc1: "Nuestra herramienta gratuita te permite comprimir archivos ZIP online directamente en tu navegador. Reduce el tamaño de tus documentos, imágenes y carpetas con unos pocos clics. Para una máxima seguridad, puedes proteger con contraseña cualquier archivo ZIP, asegurando que solo las personas adecuadas puedan acceder a tu información.",
                     seoDesc2: "El proceso es 100% seguro, ya que tus archivos no se suben a ningún servidor. Toda la compresión y descompresión se realiza localmente en tu propio dispositivo. Ya sea que necesites descomprimir un archivo ZIP con contraseña o crear uno nuevo, nuestra aplicación te ofrece una solución rápida y confiable.",
@@ -325,6 +336,7 @@
                     contactUs: "contact us",
                     privacyNotice: "Privacy Notice",
                     privacyTitle: "Privacy Notice",
+                    language: "Language",
                     seoTitle: "Your Secure and Powerful Online File Compressor",
                     seoDesc1: "Our free tool allows you to compress ZIP files online directly in your browser. Reduce the size of your documents, images, and folders with just a few clicks. For maximum security, you can password-protect any ZIP file, ensuring that only the right people can access your information.",
                     seoDesc2: "The process is 100% secure, as your files are not uploaded to any server. All compression and decompression is done locally on your own device. Whether you need to unzip a password-protected ZIP file or create a new one, our application offers a fast and reliable solution.",
@@ -422,7 +434,8 @@
             const privacyContent = document.getElementById('privacy-content');
 
             // --- Language Elements ---
-            const languageSwitcher = document.getElementById('language-switcher');
+            const languageSwitcherBtn = document.getElementById('language-switcher-btn');
+            const languageSwitcherMenu = document.getElementById('language-switcher-menu');
             
             const setLanguage = (lang) => {
                 document.documentElement.lang = lang;
@@ -449,8 +462,24 @@
                 privacyContent.innerHTML = translations[lang].privacyContent;
             };
 
-            languageSwitcher.addEventListener('change', (e) => {
-                setLanguage(e.target.value);
+            languageSwitcherBtn.addEventListener('click', () => {
+                languageSwitcherMenu.classList.toggle('hidden');
+            });
+
+            languageSwitcherMenu.addEventListener('click', (e) => {
+                const langTarget = e.target.closest('[data-lang]');
+                if (langTarget) {
+                    e.preventDefault();
+                    setLanguage(langTarget.getAttribute('data-lang'));
+                    languageSwitcherMenu.classList.add('hidden');
+                }
+            });
+
+            // Close dropdown if clicked outside
+            document.addEventListener('click', (e) => {
+                if (!languageSwitcherBtn.contains(e.target) && !languageSwitcherMenu.contains(e.target)) {
+                    languageSwitcherMenu.classList.add('hidden');
+                }
             });
 
 
@@ -747,7 +776,6 @@
             }
             
             // --- Initial Setup ---
-            languageSwitcher.value = currentLang;
             setLanguage(currentLang);
             compressBtn.disabled = true;
         });
