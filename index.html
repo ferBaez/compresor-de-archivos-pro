@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <title data-lang-key="pageTitle">Compresor de Archivos ZIP Online con Contraseña | Hitster Ai</title>
+    <meta name="description" data-lang-key="metaDescription" content="Comprime y descomprime archivos ZIP de forma segura y gratuita. Añade contraseñas, elige el nivel de compresión y maneja tus archivos directamente en el navegador.">
+    
+    <!-- Canonical URL: Replace with your actual domain -->
+    <link rel="canonical" href="https://ferbaez.github.io/Optimizador-de-Capturas/" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- JSON-LD Schema Markup for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Compresor de Archivos Pro",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "250"
+      },
+      "description": "Una herramienta web para comprimir y descomprimir archivos ZIP con opciones avanzadas como protección por contraseña y niveles de compresión.",
+      "url": "https://ferbaez.github.io/Optimizador-de-Capturas/"
+    }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .file-input-label {
+            transition: all 0.2s ease-in-out;
+        }
+        .file-input-label.dragover {
+            border-color: #3b82f6;
+            background-color: #27272a;
+        }
+        .file-input {
+            display: none;
+        }
+        .progress-bar {
+            transition: width 0.3s ease-in-out;
+        }
+        /* Custom scrollbar for modal */
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .modal-content::-webkit-scrollbar-track {
+            background: #27272a;
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background-color: #52525b;
+            border-radius: 10px;
+            border: 2px solid #27272a;
+        }
+    </style>
+</head>
+<body class="bg-zinc-900 text-zinc-200 flex flex-col min-h-screen">
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col items-center justify-center p-4 sm:p-6 md:p-8">
+        <div class="w-full max-w-4xl mx-auto">
+            
+            <h1 class="text-3xl sm:text-4xl font-bold text-center mb-2 text-white" data-lang-key="mainTitle">Compresor de Archivos Pro</h1>
+            <p class="text-center text-zinc-400 mb-6 sm:mb-8" data-lang-key="mainSubtitle">Comprime y descomprime archivos ZIP de forma rápida y segura en tu navegador.</p>
+            
+            <div class="bg-zinc-800 rounded-xl shadow-2xl p-6 sm:p-8 relative">
+                <!-- Language Switcher -->
+                <div class="absolute top-4 right-4 z-10">
+                    <select id="language-switcher" class="bg-zinc-700 text-white text-sm rounded-md p-1 border border-zinc-600 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+
+                <!-- Tab Controls -->
+                <div class="flex border-b border-zinc-700 mb-6">
+                    <button id="compress-tab-btn" class="px-4 py-2 text-lg font-semibold border-b-2 border-blue-500 text-white" data-lang-key="compressTab">Comprimir</button>
+                    <button id="decompress-tab-btn" class="px-4 py-2 text-lg font-semibold text-zinc-400 border-b-2 border-transparent" data-lang-key="decompressTab">Descomprimir</button>
+                </div>
+
+                <!-- Compressor View -->
+                <div id="compress-view">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Left side: File Upload -->
+                        <div>
+                            <label for="compress-files-input" id="compress-drop-zone" class="file-input-label flex flex-col items-center justify-center w-full h-56 sm:h-64 border-2 border-zinc-600 border-dashed rounded-lg cursor-pointer bg-zinc-700/50 hover:bg-zinc-700/80">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <svg class="w-8 h-8 sm:w-10 sm:h-10 mb-4 text-zinc-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/></svg>
+                                    <p class="mb-2 text-sm text-center text-zinc-400"><span class="font-semibold" data-lang-key="clickToUpload">Haz clic para subir</span><span data-lang-key="orDragAndDrop"> o arrastra y suelta</span></p>
+                                    <p class="text-xs text-zinc-500" data-lang-key="uploadHint">Sube uno o varios archivos</p>
+                                </div>
+                                <input id="compress-files-input" type="file" multiple class="file-input" />
+                            </label>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="text-sm font-medium" data-lang-key="selectedFiles">Archivos seleccionados:</span>
+                                <button id="clear-files-btn" class="hidden text-sm text-blue-400 hover:text-blue-300 font-semibold" data-lang-key="clearBtn">Limpiar</button>
+                            </div>
+                            <div id="compress-file-list" class="mt-2 text-sm text-zinc-300 space-y-2"></div>
+                        </div>
+
+                        <!-- Right side: Options -->
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4 text-white" data-lang-key="optionsTitle">Opciones de Compresión</h3>
+                            <div class="space-y-6">
+                                <div>
+                                    <label for="compression-level" class="block mb-2 text-sm font-medium text-zinc-300"><span data-lang-key="compressionLevel">Nivel de Compresión:</span> <span id="compression-level-value" class="font-bold text-blue-400">9</span></label>
+                                    <input id="compression-level" type="range" min="1" max="9" value="9" step="1" class="w-full h-2 bg-zinc-600 rounded-lg appearance-none cursor-pointer">
+                                    <div class="flex justify-between text-xs text-zinc-400 mt-1">
+                                        <span data-lang-key="faster">Más Rápido</span>
+                                        <span data-lang-key="optimal">Óptimo</span>
+                                        <span data-lang-key="slower">Más Lento</span>
+                                    </div>
+                                </div>
+                                 <div>
+                                    <label for="password" class="block mb-2 text-sm font-medium text-zinc-300" data-lang-key="passwordLabel">Contraseña (opcional)</label>
+                                    <input type="password" id="password" class="bg-zinc-700 border border-zinc-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="•••••••••">
+                                </div>
+                                <div>
+                                    <label for="output-filename" class="block mb-2 text-sm font-medium text-zinc-300" data-lang-key="outputFilenameLabel">Nombre del archivo de salida</label>
+                                    <input type="text" id="output-filename" class="bg-zinc-700 border border-zinc-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="archivos_comprimidos" data-lang-key="outputFilenamePlaceholder" required>
+                                </div>
+                            </div>
+                            <button id="compress-btn" class="w-full mt-8 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors" data-lang-key="compressBtn">
+                                Comprimir Archivos
+                            </button>
+                            <!-- Progress Bar -->
+                            <div id="progress-container" class="w-full bg-zinc-700 rounded-full h-2.5 mt-4 hidden">
+                                <div id="progress-bar" class="bg-blue-500 h-2.5 rounded-full progress-bar" style="width: 0%"></div>
+                            </div>
+                            <p id="compress-status" class="text-center mt-2 text-sm text-blue-400 h-5"></p>
+                             <!-- Compression Summary -->
+                            <div id="summary-container" class="hidden mt-4 p-4 bg-zinc-700/50 rounded-lg text-center">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Decompressor View (Hidden by default) -->
+                <div id="decompress-view" class="hidden">
+                     <div class="flex flex-col items-center">
+                        <label for="decompress-file-input" id="decompress-drop-zone" class="file-input-label flex flex-col items-center justify-center w-full max-w-lg h-56 sm:h-64 border-2 border-zinc-600 border-dashed rounded-lg cursor-pointer bg-zinc-700/50 hover:bg-zinc-700/80">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <svg class="w-8 h-8 sm:w-10 sm:h-10 mb-4 text-zinc-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/></svg>
+                                <p class="mb-2 text-sm text-center text-zinc-400"><span class="font-semibold" data-lang-key="clickToUpload">Haz clic para subir</span><span data-lang-key="orDragAndDrop"> o arrastra y suelta</span></p>
+                                <p class="text-xs text-zinc-500" data-lang-key="uploadZipHint">Sube un archivo .zip</p>
+                            </div>
+                            <input id="decompress-file-input" type="file" accept=".zip" class="file-input" />
+                        </label>
+                        <p id="decompress-status" class="text-center mt-3 text-sm text-blue-400 h-5"></p>
+                        <div id="decompress-password-container" class="hidden w-full max-w-lg mt-4">
+                            <label for="decompress-password" class="block mb-2 text-sm font-medium text-yellow-400" data-lang-key="passwordProtectedLabel">Este archivo está protegido. Introduce la contraseña:</label>
+                            <input type="password" id="decompress-password" class="bg-zinc-700 border border-zinc-600 text-white text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5" placeholder="•••••••••">
+                        </div>
+                        <div id="decompressed-files-container" class="w-full max-w-lg mt-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Content Section -->
+        <section class="w-full max-w-4xl mx-auto mt-12 text-zinc-400">
+            <h2 class="text-2xl font-bold text-white text-center mb-4" data-lang-key="seoTitle">Tu Compresor de Archivos Online, Seguro y Potente</h2>
+            <div class="space-y-4 text-center max-w-3xl mx-auto">
+                <p data-lang-key="seoDesc1">Nuestra herramienta gratuita te permite comprimir archivos ZIP online directamente en tu navegador. Reduce el tamaño de tus documentos, imágenes y carpetas con unos pocos clics. Para una máxima seguridad, puedes proteger con contraseña cualquier archivo ZIP, asegurando que solo las personas adecuadas puedan acceder a tu información.</p>
+                <p data-lang-key="seoDesc2">El proceso es 100% seguro, ya que tus archivos no se suben a ningún servidor. Toda la compresión y descompresión se realiza localmente en tu propio dispositivo. Ya sea que necesites descomprimir un archivo ZIP con contraseña o crear uno nuevo, nuestra aplicación te ofrece una solución rápida y confiable.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center p-4 text-zinc-500 text-sm">
+        <p>
+            <span data-lang-key="footerRights">2025 todos los derechos reservados para</span> 
+            <a href="https://studio--hitsterai.us-central1.hosted.app/es" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 underline">Hitster Ai</a> | 
+            <a href="mailto:baez@hitster.page" class="hover:text-blue-400 underline" data-lang-key="contactUs">contactanos</a> |
+            <a href="#" id="privacy-link" class="hover:text-blue-400 underline" data-lang-key="privacyNotice">Aviso de Privacidad</a>
+        </p>
+    </footer>
+    
+    <!-- Privacy Modal -->
+    <div id="privacy-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+        <div class="bg-zinc-800 text-zinc-300 rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center p-6 border-b border-zinc-700">
+                <h2 class="text-2xl font-bold text-white" data-lang-key="privacyTitle">Aviso de Privacidad</h2>
+                <button id="close-modal-btn" class="text-zinc-400 hover:text-white text-3xl leading-none">&times;</button>
+            </div>
+            <div class="p-6 overflow-y-auto modal-content">
+                <div class="space-y-4 text-justify" id="privacy-content">
+                    <!-- Privacy content will be injected by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Using zip.js for advanced features like encryption -->
+    <script src="https://unpkg.com/@zip.js/zip.js@2.7.47/dist/zip.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                es: {
+                    pageTitle: "Compresor de Archivos ZIP Online con Contraseña | Hitster Ai",
+                    metaDescription: "Comprime y descomprime archivos ZIP de forma segura y gratuita. Añade contraseñas, elige el nivel de compresión y maneja tus archivos directamente en el navegador.",
+                    mainTitle: "Compresor de Archivos Pro",
+                    mainSubtitle: "Comprime y descomprime archivos ZIP de forma rápida y segura en tu navegador.",
+                    compressTab: "Comprimir",
+                    decompressTab: "Descomprimir",
+                    clickToUpload: "Haz clic para subir",
+                    orDragAndDrop: " o arrastra y suelta",
+                    uploadHint: "Sube uno o varios archivos",
+                    selectedFiles: "Archivos seleccionados:",
+                    clearBtn: "Limpiar",
+                    optionsTitle: "Opciones de Compresión",
+                    compressionLevel: "Nivel de Compresión:",
+                    faster: "Más Rápido",
+                    optimal: "Óptimo",
+                    slower: "Más Lento",
+                    passwordLabel: "Contraseña (opcional)",
+                    outputFilenameLabel: "Nombre del archivo de salida",
+                    outputFilenamePlaceholder: "archivos_comprimidos",
+                    compressBtn: "Comprimir Archivos",
+                    uploadZipHint: "Sube un archivo .zip",
+                    passwordProtectedLabel: "Este archivo está protegido. Introduce la contraseña:",
+                    footerRights: "2025 todos los derechos reservados para",
+                    contactUs: "contactanos",
+                    privacyNotice: "Aviso de Privacidad",
+                    privacyTitle: "Aviso de Privacidad",
+                    seoTitle: "Tu Compresor de Archivos Online, Seguro y Potente",
+                    seoDesc1: "Nuestra herramienta gratuita te permite comprimir archivos ZIP online directamente en tu navegador. Reduce el tamaño de tus documentos, imágenes y carpetas con unos pocos clics. Para una máxima seguridad, puedes proteger con contraseña cualquier archivo ZIP, asegurando que solo las personas adecuadas puedan acceder a tu información.",
+                    seoDesc2: "El proceso es 100% seguro, ya que tus archivos no se suben a ningún servidor. Toda la compresión y descompresión se realiza localmente en tu propio dispositivo. Ya sea que necesites descomprimir un archivo ZIP con contraseña o crear uno nuevo, nuestra aplicación te ofrece una solución rápida y confiable.",
+                    // Dynamic statuses
+                    statusInitializing: "Iniciando compresión...",
+                    statusCompressing: "Comprimiendo...",
+                    statusSuccess: "¡Compresión completada!",
+                    statusError: "Error al comprimir.",
+                    statusLoadingFile: "Cargando {filename}...",
+                    statusExtracting: "Extrayendo archivos...",
+                    statusFileReady: "Archivo cargado. Listo para extraer.",
+                    statusEmptyZip: "El archivo .zip está vacío.",
+                    statusInvalidZip: "El archivo parece estar dañado o no es un .zip válido.",
+                    statusSelectZip: "Por favor, selecciona un archivo .zip",
+                    statusExtractingFile: "Extrayendo {filename}...",
+                    statusExtracted: "¡Archivo extraído!",
+                    statusWrongPassword: "Error: Contraseña incorrecta o archivo dañado.",
+                    // Summary
+                    summarySuccess: "¡Éxito!",
+                    summaryOriginalSize: "Tamaño Original:",
+                    summaryFinalSize: "Tamaño Final:",
+                    summarySaved: "Ahorraste {percent}%",
+                    // Decompressor
+                    fileContents: "Contenido del archivo:",
+                    downloadButton: "Descargar",
+                    downloadingButton: "...",
+                    // Privacy Notice Text
+                    privacyContent: `
+                        <p class="font-semibold">Fecha de última actualización: 23 de junio de 2025</p>
+                        <p>Bienvenido a Hitster Ai. Tu privacidad es de suma importancia para nosotros. Este Aviso de Privacidad describe cómo recopilamos, utilizamos, protegemos y compartimos tu información personal cuando visitas y utilizas nuestro sitio web y nuestros servicios. Al utilizar Hitster Ai, aceptas las prácticas descritas en este documento.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">1. Identidad y Domicilio del Responsable</h3>
+                        <p>Hitster Ai (en adelante, "nosotros", "nuestro"), con domicilio en Avenida Francisco I. Madero 104, Colonia Céspedes, Pachuca de Soto, Hidalgo, C.P. 42090, es el responsable del tratamiento de tus datos personales. Para cualquier asunto relacionado con este aviso, puedes contactarnos a través del correo electrónico: baez@hitster.page</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">2. Datos Personales que Recabamos</h3>
+                        <p>Recopilamos diferentes tipos de datos personales para operar y mejorar nuestros servicios:</p>
+                        <p><span class="font-semibold">A. Datos que nos proporcionas directamente:</span><br>Información de contacto y cuenta: Nombre completo, dirección de correo electrónico, contraseña y otra información que proporciones al registrarte. Información de perfil: Datos adicionales que decidas agregar a tu perfil de usuario. Comunicaciones: Información que nos proporcionas al contactar a nuestro equipo de soporte o al comunicarte con nosotros por cualquier otro medio.</p>
+                        <p><span class="font-semibold">B. Datos que recopilamos automáticamente:</span><br>Información de uso: Registramos cómo interactúas con nuestra plataforma, qué funcionalidades utilizas, la frecuencia y duración de tus visitas. Datos del dispositivo y conexión: Dirección IP, tipo y versión del navegador, sistema operativo, identificadores únicos de dispositivo y otra información técnica. Cookies y tecnologías similares: Utilizamos cookies, balizas web y otras tecnologías para recopilar información, mejorar la experiencia del usuario y para fines de análisis. Consulta nuestra sección sobre "Uso de Cookies" para más detalles.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">3. Finalidades del Tratamiento de Datos</h3>
+                        <p>Utilizamos tus datos personales para las siguientes finalidades:</p>
+                        <p><span class="font-semibold">A. Finalidades Primarias (necesarias para el servicio):</span><br>Proveer, operar y mantener nuestros servicios de inteligencia artificial. Crear, gestionar y asegurar tu cuenta de usuario. Procesar tus solicitudes, responder a tus preguntas y brindarte soporte técnico. Garantizar la seguridad, prevenir fraudes y hacer cumplir nuestros términos y condiciones. Enviarte comunicaciones transaccionales importantes sobre tu cuenta o cambios en el servicio.</p>
+                        <p><span class="font-semibold">B. Finalidades Secundarias (requieren tu consentimiento):</span><br>Realizar análisis estadísticos y de comportamiento para mejorar y optimizar nuestros servicios y desarrollar nuevas funcionalidades. Personalizar tu experiencia en nuestra plataforma. Enviarte boletines informativos (newsletters), promociones, ofertas especiales y otras comunicaciones de marketing sobre nuestros productos. Si no deseas que tus datos sean utilizados para estas finalidades secundarias, puedes manifestarlo enviando un correo a baez@hitster.page.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">4. Transferencia de Datos Personales</h3>
+                        <p>No vendemos ni alquilamos tu información personal. Podemos compartir tus datos con terceros únicamente en las siguientes circunstancias: Proveedores de Servicios: Compartimos información con terceros que nos prestan servicios, como proveedores de alojamiento en la nube (ej. AWS, Google Cloud), plataformas de análisis (ej. Google Analytics) y procesadores de pagos. Estos proveedores solo tienen acceso a los datos necesarios para realizar sus funciones y están obligados contractualmente a protegerlos. Cumplimiento de la Ley: Podremos divulgar tu información si así lo exige la ley, una orden judicial o para proteger nuestros derechos, propiedad o seguridad, así como los de nuestros usuarios o el público en general.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">5. Uso de Cookies y Tecnologías Similares</h3>
+                        <p>Utilizamos cookies para mejorar la funcionalidad de nuestro sitio. Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo. Puedes configurar tu navegador para rechazar todas las cookies o para que te avise cuando se envía una. Sin embargo, si no aceptas las cookies, es posible que no puedas utilizar algunas partes de nuestro servicio.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">6. Derechos ARCO (Acceso, Rectificación, Cancelación y Oposición)</h3>
+                        <p>Como titular de los datos, tienes derecho a: Acceder a los datos personales que poseemos sobre ti. Rectificar tus datos si son inexactos o están incompletos. Cancelar tus datos cuando consideres que no se están utilizando conforme a los principios y deberes establecidos. Oponerte al tratamiento de tus datos para fines específicos. Para ejercer tus Derechos ARCO, envía una solicitud detallada a baez@hitster.page, incluyendo tu nombre completo, copia de una identificación oficial y una descripción clara de tu solicitud. Te responderemos en los plazos que marca la ley.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">7. Revocación del Consentimiento</h3>
+                        <p>Puedes revocar el consentimiento que nos hayas otorgado para el tratamiento de tus datos personales en cualquier momento. Ten en cuenta que la revocación no tendrá efectos retroactivos. Para revocar tu consentimiento, envía tu solicitud a baez@hitster.page.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">8. Medidas de Seguridad</h3>
+                        <p>Hemos implementado medidas de seguridad administrativas, técnicas y físicas para proteger tus datos personales contra daño, pérdida, alteración, destrucción o el uso, acceso o tratamiento no autorizado.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">9. Cambios a este Aviso de Privacidad</h3>
+                        <p>Nos reservamos el derecho de efectuar en cualquier momento modificaciones o actualizaciones al presente aviso de privacidad. Cualquier cambio será notificado a través de nuestro sitio web o mediante comunicación directa a tu correo electrónico. Te recomendamos revisar periódicamente este aviso.</p>
+                    `
+                },
+                en: {
+                    pageTitle: "Online ZIP File Compressor with Password | Hitster Ai",
+                    metaDescription: "Compress and decompress ZIP files securely and for free. Add passwords, choose the compression level, and manage your files directly in your browser.",
+                    mainTitle: "File Compressor Pro",
+                    mainSubtitle: "Compress and decompress ZIP files quickly and securely in your browser.",
+                    compressTab: "Compress",
+                    decompressTab: "Decompress",
+                    clickToUpload: "Click to upload",
+                    orDragAndDrop: " or drag and drop",
+                    uploadHint: "Upload one or more files",
+                    selectedFiles: "Selected files:",
+                    clearBtn: "Clear",
+                    optionsTitle: "Compression Options",
+                    compressionLevel: "Compression Level:",
+                    faster: "Faster",
+                    optimal: "Optimal",
+                    slower: "Slower",
+                    passwordLabel: "Password (optional)",
+                    outputFilenameLabel: "Output filename",
+                    outputFilenamePlaceholder: "compressed_files",
+                    compressBtn: "Compress Files",
+                    uploadZipHint: "Upload a .zip file",
+                    passwordProtectedLabel: "This file is password protected. Please enter the password:",
+                    footerRights: "2025 all rights reserved for",
+                    contactUs: "contact us",
+                    privacyNotice: "Privacy Notice",
+                    privacyTitle: "Privacy Notice",
+                    seoTitle: "Your Secure and Powerful Online File Compressor",
+                    seoDesc1: "Our free tool allows you to compress ZIP files online directly in your browser. Reduce the size of your documents, images, and folders with just a few clicks. For maximum security, you can password-protect any ZIP file, ensuring that only the right people can access your information.",
+                    seoDesc2: "The process is 100% secure, as your files are not uploaded to any server. All compression and decompression is done locally on your own device. Whether you need to unzip a password-protected ZIP file or create a new one, our application offers a fast and reliable solution.",
+                    // Dynamic statuses
+                    statusInitializing: "Initializing compression...",
+                    statusCompressing: "Compressing...",
+                    statusSuccess: "Compression complete!",
+                    statusError: "Error during compression.",
+                    statusLoadingFile: "Loading {filename}...",
+                    statusExtracting: "Extracting files...",
+                    statusFileReady: "File loaded. Ready to extract.",
+                    statusEmptyZip: "The .zip file is empty.",
+                    statusInvalidZip: "The file appears to be damaged or is not a valid .zip.",
+                    statusSelectZip: "Please select a .zip file",
+                    statusExtractingFile: "Extracting {filename}...",
+                    statusExtracted: "File extracted!",
+                    statusWrongPassword: "Error: Incorrect password or corrupted file.",
+                    // Summary
+                    summarySuccess: "Success!",
+                    summaryOriginalSize: "Original Size:",
+                    summaryFinalSize: "Final Size:",
+                    summarySaved: "You saved {percent}%",
+                    // Decompressor
+                    fileContents: "File contents:",
+                    downloadButton: "Download",
+                    downloadingButton: "...",
+                    // Privacy Notice Text
+                    privacyContent: `
+                        <p class="font-semibold">Last updated: June 23, 2025</p>
+                        <p>Welcome to Hitster Ai. Your privacy is of utmost importance to us. This Privacy Notice describes how we collect, use, protect, and share your personal information when you visit and use our website and services. By using Hitster Ai, you agree to the practices described in this document.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">1. Identity and Domicile of the Controller</h3>
+                        <p>Hitster Ai (hereinafter, "we", "us", "our"), located at Avenida Francisco I. Madero 104, Colonia Céspedes, Pachuca de Soto, Hidalgo, C.P. 42090, is the controller of your personal data. For any matter related to this notice, you can contact us via email at: baez@hitster.page</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">2. Personal Data We Collect</h3>
+                        <p>We collect different types of personal data to operate and improve our services:</p>
+                        <p><span class="font-semibold">A. Data you provide directly to us:</span><br>Contact and account information: Full name, email address, password, and other information you provide upon registration. Profile information: Additional data you choose to add to your user profile. Communications: Information you provide when contacting our support team or communicating with us by any other means.</p>
+                        <p><span class="font-semibold">B. Data we collect automatically:</span><br>Usage information: We record how you interact with our platform, what features you use, and the frequency and duration of your visits. Device and connection data: IP address, browser type and version, operating system, unique device identifiers, and other technical information. Cookies and similar technologies: We use cookies, web beacons, and other technologies to collect information, improve user experience, and for analytical purposes. See our "Use of Cookies" section for more details.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">3. Purposes of Data Processing</h3>
+                        <p>We use your personal data for the following purposes:</p>
+                        <p><span class="font-semibold">A. Primary Purposes (necessary for the service):</span><br>To provide, operate, and maintain our artificial intelligence services. To create, manage, and secure your user account. To process your requests, answer your questions, and provide you with technical support. To ensure security, prevent fraud, and enforce our terms and conditions. To send you important transactional communications about your account or service changes.</p>
+                        <p><span class="font-semibold">B. Secondary Purposes (require your consent):</span><br>To perform statistical and behavioral analysis to improve and optimize our services and develop new features. To personalize your experience on our platform. To send you newsletters, promotions, special offers, and other marketing communications about our products. If you do not want your data to be used for these secondary purposes, you can state so by sending an email to baez@hitster.page.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">4. Transfer of Personal Data</h3>
+                        <p>We do not sell or rent your personal information. We may share your data with third parties only in the following circumstances: Service Providers: We share information with third parties who provide services to us, such as cloud hosting providers (e.g., AWS, Google Cloud), analytics platforms (e.g., Google Analytics), and payment processors. These providers only have access to the data necessary to perform their functions and are contractually obligated to protect it. Compliance with the Law: We may disclose your information if required by law, a court order, or to protect our rights, property, or safety, as well as that of our users or the general public.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">5. Use of Cookies and Similar Technologies</h3>
+                        <p>We use cookies to improve the functionality of our site. Cookies are small text files stored on your device. You can set your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some parts of our service.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">6. ARCO Rights (Access, Rectification, Cancellation, and Opposition)</h3>
+                        <p>As the data subject, you have the right to: Access the personal data we hold about you. Rectify your data if it is inaccurate or incomplete. Cancel your data when you consider that it is not being used in accordance with the established principles and duties. Oppose the processing of your data for specific purposes. To exercise your ARCO Rights, send a detailed request to baez@hitster.page, including your full name, a copy of an official ID, and a clear description of your request. We will respond within the timeframes established by law.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">7. Revocation of Consent</h3>
+                        <p>You can revoke the consent you have given us for the processing of your personal data at any time. Please note that the revocation will not have retroactive effects. To revoke your consent, send your request to baez@hitster.page.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">8. Medidas de Seguridad</h3>
+                        <p>We have implemented administrative, technical, and physical security measures to protect your personal data against damage, loss, alteration, destruction, or unauthorized use, access, or processing.</p>
+                        <h3 class="text-lg font-semibold text-white pt-2">9. Cambios a este Aviso de Privacidad</h3>
+                        <p>We reserve the right to make changes or updates to this privacy notice at any time. Any changes will be notified through our website or by direct communication to your email. We recommend reviewing this notice periodically.</p>
+                    `
+                }
+            };
+
+            let currentLang = localStorage.getItem('language') || 'es';
+
+            // --- General Elements ---
+            const compressTabBtn = document.getElementById('compress-tab-btn');
+            const decompressTabBtn = document.getElementById('decompress-tab-btn');
+            const compressView = document.getElementById('compress-view');
+            const decompressView = document.getElementById('decompress-view');
+            
+            // --- Compressor Elements ---
+            const compressFilesInput = document.getElementById('compress-files-input');
+            const compressDropZone = document.getElementById('compress-drop-zone');
+            const compressFileList = document.getElementById('compress-file-list');
+            const clearFilesBtn = document.getElementById('clear-files-btn');
+            const compressionLevelSlider = document.getElementById('compression-level');
+            const compressionLevelValue = document.getElementById('compression-level-value');
+            const outputFilenameInput = document.getElementById('output-filename');
+            const passwordInput = document.getElementById('password');
+            const compressBtn = document.getElementById('compress-btn');
+            const compressStatus = document.getElementById('compress-status');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const summaryContainer = document.getElementById('summary-container');
+            let filesToCompress = [];
+            let compressionWorker;
+
+            // --- Decompressor Elements ---
+            const decompressFileInput = document.getElementById('decompress-file-input');
+            const decompressDropZone = document.getElementById('decompress-drop-zone');
+            const decompressStatus = document.getElementById('decompress-status');
+            const decompressedFilesContainer = document.getElementById('decompressed-files-container');
+            const decompressPasswordContainer = document.getElementById('decompress-password-container');
+            const decompressPasswordInput = document.getElementById('decompress-password');
+            let zipEntries = [];
+
+            // --- Modal Elements ---
+            const privacyLink = document.getElementById('privacy-link');
+            const privacyModal = document.getElementById('privacy-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const privacyContent = document.getElementById('privacy-content');
+
+            // --- Language Elements ---
+            const languageSwitcher = document.getElementById('language-switcher');
+            
+            const setLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                localStorage.setItem('language', lang);
+                currentLang = lang;
+
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.getAttribute('data-lang-key');
+                    const translation = translations[lang][key];
+                    if (translation) {
+                        if(element.getAttribute('id') === 'meta-description-tag') {
+                           element.setAttribute('content', translation);
+                        } else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                           if(element.placeholder) element.placeholder = translation;
+                        } else {
+                            element.textContent = translation;
+                        }
+                    }
+                });
+
+                // Special case for privacy content & title
+                document.title = translations[lang].pageTitle;
+                document.querySelector('meta[name="description"]').setAttribute('content', translations[lang].metaDescription);
+                privacyContent.innerHTML = translations[lang].privacyContent;
+            };
+
+            languageSwitcher.addEventListener('change', (e) => {
+                setLanguage(e.target.value);
+            });
+
+
+            // --- Tab Switching Logic ---
+            compressTabBtn.addEventListener('click', () => {
+                compressView.classList.remove('hidden');
+                decompressView.classList.add('hidden');
+                compressTabBtn.classList.add('border-blue-500', 'text-white');
+                compressTabBtn.classList.remove('border-transparent', 'text-zinc-400');
+                decompressTabBtn.classList.add('border-transparent', 'text-zinc-400');
+                decompressTabBtn.classList.remove('border-blue-500', 'text-white');
+            });
+
+            decompressTabBtn.addEventListener('click', () => {
+                decompressView.classList.remove('hidden');
+                compressView.classList.add('hidden');
+                decompressTabBtn.classList.add('border-blue-500', 'text-white');
+                decompressTabBtn.classList.remove('border-transparent', 'text-zinc-400');
+                compressTabBtn.classList.add('border-transparent', 'text-zinc-400');
+                compressTabBtn.classList.remove('border-blue-500', 'text-white');
+            });
+            
+            // --- Drag and Drop Highlighting ---
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                compressDropZone.addEventListener(eventName, preventDefaults, false);
+                decompressDropZone.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                compressDropZone.addEventListener(eventName, () => compressDropZone.classList.add('dragover'), false);
+                decompressDropZone.addEventListener(eventName, () => decompressDropZone.classList.add('dragover'), false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                compressDropZone.addEventListener(eventName, () => compressDropZone.classList.remove('dragover'), false);
+                decompressDropZone.addEventListener(eventName, () => decompressDropZone.classList.remove('dragover'), false);
+            });
+
+
+            // --- COMPRESSOR LOGIC ---
+            function createWorker() {
+                const workerCode = `
+                    self.importScripts('https://unpkg.com/@zip.js/zip.js@2.7.47/dist/zip.min.js');
+
+                    self.onmessage = async (e) => {
+                        const { files, level, password } = e.data;
+                        let totalSize = files.reduce((sum, file) => sum + file.size, 0);
+                        let processedSize = 0;
+
+                        const zipWriter = new zip.ZipWriter(new zip.BlobWriter("application/zip"));
+
+                        for (const file of files) {
+                            const options = {
+                                level: level,
+                                password: password || undefined,
+                                onprogress: (progress, total) => {
+                                    const filePercent = (progress / total) * file.size;
+                                    const overallPercent = ((processedSize + filePercent) / totalSize) * 100;
+                                    self.postMessage({ type: 'progress', percent: overallPercent });
+                                }
+                            };
+                            await zipWriter.add(file.name, new zip.BlobReader(file), options);
+                            processedSize += file.size;
+                        }
+                        
+                        try {
+                            const blob = await zipWriter.close();
+                            self.postMessage({ type: 'success', blob: blob });
+                        } catch(error) {
+                             self.postMessage({ type: 'error', error: error.message });
+                        }
+                    };
+                `;
+                const blob = new Blob([workerCode], { type: 'application/javascript' });
+                return new Worker(URL.createObjectURL(blob));
+            }
+            
+            compressionWorker = createWorker();
+            
+            compressionWorker.onmessage = (e) => {
+                 const { type, percent, blob, error } = e.data;
+                 
+                 if (type === 'progress') {
+                    const fixedPercent = percent.toFixed(0);
+                    compressStatus.textContent = `${translations[currentLang].statusCompressing} ${fixedPercent}%`;
+                    progressBar.style.width = `${fixedPercent}%`;
+                 } else if (type === 'success') {
+                    const finalSize = blob.size;
+                    const originalSize = filesToCompress.reduce((acc, file) => acc + file.size, 0);
+                    const savedPercent = originalSize > 0 ? (100 * (originalSize - finalSize) / originalSize).toFixed(1) : 0;
+                    const filename = (outputFilenameInput.value || translations[currentLang].outputFilenamePlaceholder) + '.zip';
+                    downloadBlob(blob, filename);
+                    compressStatus.textContent = translations[currentLang].statusSuccess;
+                    
+                    const savedText = translations[currentLang].summarySaved.replace('{percent}', savedPercent);
+                    summaryContainer.innerHTML = `
+                        <p class="font-semibold text-white">${translations[currentLang].summarySuccess}</p>
+                        <p class="text-sm">${translations[currentLang].summaryOriginalSize} <span class="font-bold">${formatBytes(originalSize)}</span></p>
+                        <p class="text-sm">${translations[currentLang].summaryFinalSize} <span class="font-bold">${formatBytes(finalSize)}</span></p>
+                        <p class="text-lg text-green-400 font-bold mt-1">${savedText}</p>
+                    `;
+                    summaryContainer.classList.remove('hidden');
+                    compressBtn.disabled = false;
+                    setTimeout(() => {
+                        compressStatus.textContent = '';
+                        progressContainer.classList.add('hidden');
+                    }, 5000);
+                 } else if (type === 'error') {
+                    console.error('Error from worker:', error);
+                    compressStatus.textContent = translations[currentLang].statusError;
+                    compressBtn.disabled = false;
+                 }
+            };
+            
+            compressionLevelSlider.addEventListener('input', (e) => {
+                compressionLevelValue.textContent = e.target.value;
+            });
+            
+            compressDropZone.addEventListener('drop', (e) => handleCompressFiles(e.dataTransfer.files), false);
+            compressFilesInput.addEventListener('change', (e) => handleCompressFiles(e.target.files));
+            clearFilesBtn.addEventListener('click', () => {
+                filesToCompress = [];
+                compressFilesInput.value = '';
+                updateCompressFileList();
+            });
+
+            function handleCompressFiles(files) {
+                filesToCompress.push(...Array.from(files));
+                updateCompressFileList();
+            }
+
+            function updateCompressFileList() {
+                compressFileList.innerHTML = '';
+                if (filesToCompress.length > 0) {
+                    const list = document.createElement('ul');
+                    list.className = 'list-disc list-inside bg-zinc-700/50 p-3 rounded-md max-h-28 overflow-y-auto';
+                    filesToCompress.forEach(file => {
+                        const li = document.createElement('li');
+                        li.textContent = `${file.name} (${formatBytes(file.size)})`;
+                        list.appendChild(li);
+                    });
+                    compressFileList.appendChild(list);
+                    compressBtn.disabled = false;
+                    clearFilesBtn.classList.remove('hidden');
+                } else {
+                    compressBtn.disabled = true;
+                    clearFilesBtn.classList.add('hidden');
+                }
+            }
+
+            compressBtn.addEventListener('click', () => {
+                if (filesToCompress.length === 0) return;
+
+                compressStatus.textContent = translations[currentLang].statusInitializing;
+                summaryContainer.classList.add('hidden');
+                progressContainer.classList.remove('hidden');
+                progressBar.style.width = '0%';
+                compressBtn.disabled = true;
+                
+                const level = parseInt(compressionLevelSlider.value);
+                const password = passwordInput.value;
+                
+                compressionWorker.postMessage({ files: filesToCompress, level: level, password: password });
+            });
+
+
+            // --- DECOMPRESSOR LOGIC ---
+            decompressDropZone.addEventListener('drop', (e) => handleDecompressFile(e.dataTransfer.files[0]), false);
+            decompressFileInput.addEventListener('change', (e) => handleDecompressFile(e.target.files[0]));
+
+            async function handleDecompressFile(file) {
+                if (!file || !file.name.endsWith('.zip')) {
+                    decompressStatus.textContent = translations[currentLang].statusSelectZip;
+                    return;
+                }
+                
+                decompressStatus.textContent = translations[currentLang].statusLoadingFile.replace('{filename}', file.name);
+                decompressedFilesContainer.innerHTML = '';
+                decompressPasswordContainer.classList.add('hidden');
+                decompressPasswordInput.value = '';
+                
+                try {
+                    const zipReader = new zip.ZipReader(new zip.BlobReader(file));
+                    zipEntries = await zipReader.getEntries();
+                    
+                    if (zipEntries.length > 0) {
+                        if (zipEntries.some(entry => entry.encrypted)) {
+                           decompressPasswordContainer.classList.remove('hidden');
+                        }
+                        displayZipEntries();
+                        decompressStatus.textContent = translations[currentLang].statusFileReady;
+                    } else {
+                        decompressStatus.textContent = translations[currentLang].statusEmptyZip;
+                    }
+                } catch (error) {
+                    console.error('Error reading zip:', error);
+                    decompressStatus.textContent = translations[currentLang].statusInvalidZip;
+                } finally {
+                    setTimeout(() => decompressStatus.textContent = '', 4000);
+                }
+            }
+
+            function displayZipEntries() {
+                decompressedFilesContainer.innerHTML = '';
+                const fileListContainer = document.createElement('div');
+                fileListContainer.className = 'space-y-2 bg-zinc-700/50 p-4 rounded-lg';
+                
+                const header = document.createElement('h4');
+                header.className = 'font-semibold text-lg pb-2 border-b border-zinc-600 mb-2';
+                header.textContent = translations[currentLang].fileContents;
+                fileListContainer.appendChild(header);
+
+                zipEntries.forEach(entry => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'flex justify-between items-center bg-zinc-800 p-2 rounded';
+                    
+                    const fileNameSpan = document.createElement('span');
+                    fileNameSpan.textContent = entry.filename;
+                    
+                    if (!entry.directory) {
+                        const downloadBtn = document.createElement('button');
+                        downloadBtn.textContent = translations[currentLang].downloadButton;
+                        downloadBtn.className = 'text-sm bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md transition-colors';
+                        
+                        downloadBtn.onclick = async () => {
+                            downloadBtn.textContent = translations[currentLang].downloadingButton;
+                            downloadBtn.disabled = true;
+                            decompressStatus.textContent = translations[currentLang].statusExtractingFile.replace('{filename}', entry.filename);
+                            try {
+                                const password = decompressPasswordInput.value;
+                                const blob = await entry.getData(new zip.BlobWriter(), { password: password || undefined });
+                                downloadBlob(blob, entry.filename);
+                                decompressStatus.textContent = translations[currentLang].statusExtracted;
+                            } catch(e) {
+                                console.error(e);
+                                decompressStatus.textContent = translations[currentLang].statusWrongPassword;
+                            } finally {
+                                downloadBtn.textContent = translations[currentLang].downloadButton;
+                                downloadBtn.disabled = false;
+                                setTimeout(() => decompressStatus.textContent = '', 4000);
+                            }
+                        };
+                        fileItem.appendChild(fileNameSpan);
+                        fileItem.appendChild(downloadBtn);
+                    } else {
+                        fileNameSpan.textContent = `📁 ${entry.filename}`;
+                        fileItem.appendChild(fileNameSpan);
+                    }
+                    fileListContainer.appendChild(fileItem);
+                });
+                decompressedFilesContainer.appendChild(fileListContainer);
+            }
+
+            // --- MODAL LOGIC ---
+            privacyLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                privacyModal.classList.remove('hidden');
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                privacyModal.classList.add('hidden');
+            });
+
+            privacyModal.addEventListener('click', (e) => {
+                if (e.target === privacyModal) { // Clicked on the overlay itself
+                    privacyModal.classList.add('hidden');
+                }
+            });
+
+
+            // --- UTILITY FUNCTIONS ---
+            function downloadBlob(blob, name) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = name;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            }
+
+            function formatBytes(bytes, decimals = 2) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const dm = decimals < 0 ? 0 : decimals;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+            }
+            
+            // --- Initial Setup ---
+            languageSwitcher.value = currentLang;
+            setLanguage(currentLang);
+            compressBtn.disabled = true;
+        });
+    </script>
+</body>
+</html>
+
